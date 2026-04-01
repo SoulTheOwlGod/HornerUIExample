@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Selector</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=Barlow:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #9b8442;
+      --bg2:#ffffff;
+      --surface: #ffffff;
+      --surface2: #ffffff;
+      --border: #9b8442;
+      --accent: #264480;
+      --accent2: #9b8442;
+      --text: #000000;
+      --text2: #ffffff;
+      --text-muted: #7a8899;
+      --danger: #e05252;
+      --radius: 6px;
+    }
+
+    body {
+      background: var(--bg2);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      font-size: 15px;
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--bg2);
+      border-bottom: 2px solid var(--accent);
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    subheader {
+      background: var(--bg);
+      border-bottom: 2px solid var(--accent);
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    subheader2 {
+      background: var(--bg);
+      border-bottom: 2px solid var(--accent);
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .logo {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+
+    .number {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text2);
+    }
+
+    .logo span { color: var(--accent); }
+
+    nav { display: flex; gap: 28px; }
+
+    nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    nav a:hover, nav a.active { color: var(--accent); }
+
+    .page {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      min-height: calc(100vh - 64px);
+    }
+
+    .sidebar {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    .filter-group {
+      border-top: 1px solid var(--border);
+      padding: 16px 0;
+    }
+
+    .filter-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    select {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      padding: 8px 10px;
+      border-radius: var(--radius);
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2300c8a0' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    select:hover, select:focus { border-color: var(--accent); outline: none; }
+
+    .toggle-group { display: flex; gap: 8px; }
+
+    .toggle-btn {
+      flex: 1;
+      padding: 7px 0;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--text-muted);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .toggle-btn:hover { border-color: var(--accent2); color: var(--text); }
+    .toggle-btn.active-yes { background: rgba(0,200,160,0.12); border-color: var(--accent); color: var(--accent); }
+    .toggle-btn.active-no  { background: rgba(224,82,82,0.10); border-color: var(--danger); color: var(--danger); }
+
+    .sidebar-actions {
+      margin-top: auto;
+      padding-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 11px;
+      background: var(--accent);
+      color: #0d1117;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-primary:hover { opacity: 0.88; }
+
+    .btn-ghost {
+      width: 100%;
+      padding: 9px;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-ghost:hover { border-color: var(--text2); color: var(--text); }
+
+    .main { padding: 32px 36px; display: flex; flex-direction: column; gap: 24px; }
+
+    .main-header { display: flex; align-items: center; justify-content: space-between; }
+
+    .main-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .result-count { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--text); }
+    .result-count span { color: var(--accent); }
+
+    .active-filters { display: flex; flex-wrap: wrap; gap: 8px; min-height: 28px; }
+
+    .filter-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0,200,160,0.1);
+      border: 1px solid rgba(0,200,160,0.3);
+      border-radius: 100px;
+      padding: 3px 10px 3px 12px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+    }
+
+    .pill-remove { cursor: pointer; font-size: 14px; line-height: 1; opacity: 0.6; transition: opacity 0.15s; }
+    .pill-remove:hover { opacity: 1; }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 18px;
+    }
+
+    .product-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: border-color 0.2s, transform 0.15s;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .product-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .product-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .product-card:hover::before { opacity: 1; }
+
+    .card-model {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .card-badges { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+
+    .badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 4px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .badge.yes { border-color: rgba(0,200,160,0.4); color: var(--accent); background: rgba(0,200,160,0.07); }
+    .badge.no  { border-color: rgba(224,82,82,0.3); color: var(--danger); background: rgba(224,82,82,0.06); }
+
+    .card-specs { display: flex; flex-direction: column; gap: 6px; }
+
+    .spec-row { display: flex; justify-content: space-between; align-items: center; }
+    .spec-key  { color: var(--text-muted); font-size: 12px; }
+    .spec-val  { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--text); }
+
+    .spec-divider { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
+
+    .card-action { margin-top: auto; display: flex; gap: 8px; }
+
+    .btn-card {
+      flex: 1;
+      padding: 7px 0;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-card.primary { background: var(--accent); border-color: var(--accent); color: #0d1117; }
+    .btn-card:hover:not(.primary) { border-color: var(--accent2); color: var(--text); }
+    .btn-card.primary:hover { opacity: 0.85; }
+
+    .empty-state { text-align: center; padding: 80px 0; color: var(--text-muted); grid-column: 1/-1; }
+    .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
+    .empty-state p { font-family: 'IBM Plex Mono', monospace; font-size: 13px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><span>Horner</span> &nbsp;|&nbsp; Product Finder</div>
+  <nav>
+    <a href="#" class="active">Selector</a>
+    <a href="#">Datasheets</a>
+    <a href="#">Compare</a>
+    <a href="#">Support</a>
+  </nav>
+</header>
+
+<div class="page">
+
+  <aside class="sidebar">
+    <div class="sidebar-title">Filter Specifications</div>
+
+    <div class="filter-group">
+      <div class="filter-label">Screen Size / Resolution</div>
+      <select id="f-screen" onchange="applyFilters()">
+        <option value="">Any</option>
+        <option>7" — 800×480</option>
+        <option>10.1" — 1280×800</option>
+        <option>12.1" — 1024×768</option>
+        <option>15.6" — 1920×1080</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label">Analog I/O Type</div>
+      <select id="f-analog" onchange="applyFilters()">
+        <option value="">Any</option>
+        <option>0–10 V</option>
+        <option>4–20 mA</option>
+        <option>0–5 V</option>
+        <option>±10 V</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label">Digital I/O</div>
+      <div class="toggle-group">
+        <button class="toggle-btn" id="dio-yes" onclick="toggleYesNo('dio','yes')">Yes</button>
+        <button class="toggle-btn" id="dio-no"  onclick="toggleYesNo('dio','no')">No</button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label">DIN Rail Mountable</div>
+      <div class="toggle-group">
+        <button class="toggle-btn" id="din-yes" onclick="toggleYesNo('din','yes')">Yes</button>
+        <button class="toggle-btn" id="din-no"  onclick="toggleYesNo('din','no')">No</button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label">Certification</div>
+      <select id="f-cert" onchange="applyFilters()">
+        <option value="">Any</option>
+        <option>CE</option>
+        <option>UL</option>
+        <option>CE + UL</option>
+        <option>FCC</option>
+        <option>ATEX</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label">Temperature Range</div>
+      <select id="f-temp" onchange="applyFilters()">
+        <option value="">Any</option>
+        <option>Standard (0°C to +50°C)</option>
+        <option>Extended (−20°C to +70°C)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label">Audio</div>
+      <div class="toggle-group">
+        <button class="toggle-btn" id="audio-yes" onclick="toggleYesNo('audio','yes')">Yes</button>
+        <button class="toggle-btn" id="audio-no"  onclick="toggleYesNo('audio','no')">No</button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-label">Input Voltage Range</div>
+      <select id="f-voltage" onchange="applyFilters()">
+        <option value="">Any</option>
+        <option>9–36 VDC</option>
+      </select>
+    </div>
+
+    <div class="sidebar-actions">
+      <button class="btn-primary" onclick="applyFilters()">Find Products</button>
+      <button class="btn-ghost" onclick="resetFilters()">Reset Filters</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="main-header">
+      <div class="main-title">Available Products</div>
+      <div class="result-count">Showing <span id="count">6</span> results</div>
+    </div>
+
+    <div class="active-filters" id="active-filters"></div>
+    <div class="product-grid" id="product-grid"></div>
+  </main>
+</div>
+
+<script>
+  const products = [
+    { model: "XL7",  screen: '7" — 800×480',       analog: "4–20 mA", digitalIO: true,  dinRail: true,  cert: "CE",      temp: "Standard (0°C to +50°C)",   audio: false, voltage: "9–36 VDC" },
+    { model: "XL6",  screen: '10.1" — 1280×800',   analog: "0–10 V",  digitalIO: true,  dinRail: true,  cert: "CE + UL", temp: "Extended (−20°C to +70°C)", audio: true,  voltage: "9–36 VDC" },
+    { model: "XL4",  screen: '12.1" — 1024×768',   analog: "±10 V",   digitalIO: false, dinRail: false, cert: "UL",      temp: "Standard (0°C to +50°C)",   audio: false, voltage: "9–36 VDC" },
+    { model: "XL7 Prime",  screen: '15.6" — 1920×1080',  analog: "0–5 V",   digitalIO: true,  dinRail: false, cert: "CE",      temp: "Extended (−20°C to +70°C)", audio: true,  voltage: "9–36 VDC" },
+    { model: "XL6 Prime",  screen: '7" — 800×480',       analog: "0–10 V",  digitalIO: false, dinRail: true,  cert: "FCC",     temp: "Standard (0°C to +50°C)",   audio: false, voltage: "9–36 VDC" },
+    { model: "XL4 Prime",  screen: '10.1" — 1280×800',   analog: "4–20 mA", digitalIO: true,  dinRail: true,  cert: "ATEX",    temp: "Extended (−20°C to +70°C)", audio: true,  voltage: "9–36 VDC" },
+  ];
+
+  const toggleState = { dio: null, din: null, audio: null };
+
+  function toggleYesNo(group, val) {
+    if (toggleState[group] === val) {
+      toggleState[group] = null;
+      document.getElementById(group+'-yes').className = 'toggle-btn';
+      document.getElementById(group+'-no').className  = 'toggle-btn';
+    } else {
+      toggleState[group] = val;
+      document.getElementById(group+'-yes').className = val==='yes' ? 'toggle-btn active-yes' : 'toggle-btn';
+      document.getElementById(group+'-no').className  = val==='no'  ? 'toggle-btn active-no'  : 'toggle-btn';
+    }
+    applyFilters();
+  }
+
+  function getFilters() {
+    return {
+      screen:    document.getElementById('f-screen').value,
+      analog:    document.getElementById('f-analog').value,
+      cert:      document.getElementById('f-cert').value,
+      temp:      document.getElementById('f-temp').value,
+      voltage:   document.getElementById('f-voltage').value,
+      digitalIO: toggleState.dio,
+      dinRail:   toggleState.din,
+      audio:     toggleState.audio,
+    };
+  }
+
+  function applyFilters() {
+    const f = getFilters();
+    const filtered = products.filter(p => {
+      if (f.screen  && p.screen  !== f.screen)  return false;
+      if (f.analog  && p.analog  !== f.analog)  return false;
+      if (f.cert    && p.cert    !== f.cert)    return false;
+      if (f.temp    && p.temp    !== f.temp)    return false;
+      if (f.voltage && p.voltage !== f.voltage) return false;
+      if (f.digitalIO==='yes' && !p.digitalIO) return false;
+      if (f.digitalIO==='no'  &&  p.digitalIO) return false;
+      if (f.dinRail==='yes'   && !p.dinRail)   return false;
+      if (f.dinRail==='no'    &&  p.dinRail)   return false;
+      if (f.audio==='yes'     && !p.audio)     return false;
+      if (f.audio==='no'      &&  p.audio)     return false;
+      return true;
+    });
+    renderPills(f);
+    renderGrid(filtered);
+    document.getElementById('count').textContent = filtered.length;
+  }
+
+  function renderPills(f) {
+    const container = document.getElementById('active-filters');
+    const labels = { screen:'Screen', analog:'Analog I/O', cert:'Cert', temp:'Temp', voltage:'Voltage', digitalIO:'Digital I/O', dinRail:'DIN Rail', audio:'Audio' };
+    const pills = Object.entries(f)
+      .filter(([,v]) => v)
+      .map(([k,v]) => {
+        const display = v==='yes'?'Yes':v==='no'?'No':v;
+        return `<div class="filter-pill">${labels[k]}: ${display} <span class="pill-remove" onclick="clearFilter('${k}')">×</span></div>`;
+      });
+    container.innerHTML = pills.join('');
+  }
+
+  function clearFilter(key) {
+    const groupMap = { digitalIO:'dio', dinRail:'din', audio:'audio' };
+    if (groupMap[key]) {
+      const g = groupMap[key];
+      toggleState[g] = null;
+      document.getElementById(g+'-yes').className = 'toggle-btn';
+      document.getElementById(g+'-no').className  = 'toggle-btn';
+    } else {
+      const idMap = { screen:'f-screen', analog:'f-analog', cert:'f-cert', temp:'f-temp', voltage:'f-voltage' };
+      document.getElementById(idMap[key]).value = '';
+    }
+    applyFilters();
+  }
+
+  function resetFilters() {
+    ['f-screen','f-analog','f-cert','f-temp','f-voltage'].forEach(id => document.getElementById(id).value='');
+    ['dio','din','audio'].forEach(g => {
+      toggleState[g] = null;
+      document.getElementById(g+'-yes').className = 'toggle-btn';
+      document.getElementById(g+'-no').className  = 'toggle-btn';
+    });
+    applyFilters();
+  }
+
+  function yn(val, label) {
+    return `<span class="badge ${val?'yes':'no'}">${val?'Yes':'No'}</span><span style="font-size:11px;color:var(--text-muted)">${label}</span>`;
+  }
+
+  function renderGrid(list) {
+    const grid = document.getElementById('product-grid');
+    if (!list.length) {
+      grid.innerHTML = `<div class="empty-state"><div class="icon">⊘</div><p>No products match the selected filters.</p></div>`;
+      return;
+    }
+    grid.innerHTML = list.map(p => `
+      <div class="product-card">
+        <div class="card-model">${p.model}</div>
+        <div class="card-badges">
+          ${yn(p.digitalIO,'Digital I/O')}
+          ${yn(p.dinRail,'DIN Rail')}
+          ${yn(p.audio,'Audio')}
+        </div>
+        <hr class="spec-divider">
+        <div class="card-specs">
+          <div class="spec-row"><span class="spec-key">Screen</span><span class="spec-val">${p.screen}</span></div>
+          <div class="spec-row"><span class="spec-key">Analog I/O</span><span class="spec-val">${p.analog}</span></div>
+          <div class="spec-row"><span class="spec-key">Cert</span><span class="spec-val">${p.cert}</span></div>
+          <div class="spec-row"><span class="spec-key">Temp</span><span class="spec-val">${p.temp.split(' ')[0]}</span></div>
+          <div class="spec-row"><span class="spec-key">Voltage</span><span class="spec-val">${p.voltage}</span></div>
+        </div>
+        <div class="card-action">
+          <button class="btn-card">Datasheet</button>
+          <button class="btn-card primary">Select</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  applyFilters();
+</script>
+</body>
+</html>
