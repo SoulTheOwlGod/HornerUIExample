@@ -278,7 +278,7 @@
       position: absolute;
       top: 0; left: 0; right: 0;
       height: 2px;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      background: linear-gradient(90deg, var(--bg2), var(--accent2));
       opacity: 0;
       transition: opacity 0.2s;
     }
@@ -329,12 +329,12 @@
       border-radius: var(--radius);
       border: 1px solid var(--border);
       background: transparent;
-      color: var(--text-muted);
+      color: var(--text);
       cursor: pointer;
       transition: all 0.15s;
     }
 
-    .btn-card.primary { background: var(--accent); border-color: var(--accent); color: #0d1117; }
+    .btn-card.primary {border-color: var(--accent2); color: var(--text); }
     .btn-card:hover:not(.primary) { border-color: var(--accent2); color: var(--text); }
     .btn-card.primary:hover { opacity: 0.85; }
 
